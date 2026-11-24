@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Laboratório &lt;conectados/&gt; — Pratique HTML e CSS</title>
+<style>
+  :root{
+    --ink:#14213d; --ink2:#0f1a30; --paper:#fbf8f1; --sun:#ffc43d; --coral:#ef476f; --mint:#06d6a0; --sky:#118ab2;
+    --muted:#5b6475; --line:#e4ddcc;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{font-family:"Segoe UI",system-ui,-apple-system,Roboto,Arial,sans-serif;background:var(--paper);color:var(--ink);display:flex;flex-direction:column;min-height:100vh}
+  code,.mono,textarea{font-family:"Cascadia Code","Fira Code",Consolas,"DejaVu Sans Mono",monospace}
+  button{font:inherit;cursor:pointer}
+
+  /* topo */
+  .top{display:flex;align-items:center;gap:18px;padding:12px 20px;background:var(--ink);color:#fff;flex-wrap:wrap}
+  .logo{font-weight:800;font-size:19px;letter-spacing:.3px;white-space:nowrap}
+  .logo span{color:var(--sun)}
+  .logo small{font-weight:500;opacity:.7;font-size:13px;margin-left:8px}
+  .progress{flex:1;min-width:180px;display:flex;align-items:center;gap:10px;font-size:13px}
+  .bar{flex:1;height:10px;background:rgba(255,255,255,.15);border-radius:99px;overflow:hidden}
+  .bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--mint),var(--sun));transition:width .5s}
+  .medals{font-size:14px;white-space:nowrap}
+  .medals b{color:var(--sun);font-size:16px}
+  .top .ghost{background:transparent;border:1.5px solid rgba(255,255,255,.4);color:#fff;border-radius:99px;padding:6px 14px;font-size:13px}
+
+  /* abas mobile */
+  .tabs{display:none;background:var(--ink2)}
+  .tabs button{flex:1;background:none;border:0;color:#aab3c5;padding:11px 6px;font-weight:700;font-size:14px;border-bottom:3px solid transparent}
+  .tabs button.on{color:#fff;border-color:var(--sun)}
+
+  main{flex:1;display:grid;grid-template-columns:340px 1fr 1fr;min-height:0}
+  .pane{display:flex;flex-direction:column;min-height:0;min-width:0}
+
+  /* missão */
+  .mission{background:#fff;border-right:2px solid var(--line);overflow:auto}
+  .mission .mcard{order:1}.mission .aulas{order:2;border-bottom:0;border-top:2px solid var(--line)}
+  .aulas{padding:14px 16px;border-bottom:2px solid var(--line);display:flex;flex-direction:column;gap:6px}
+  .aulas h3{font-size:12px;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);margin-bottom:4px}
+  .aula{border-radius:10px;overflow:hidden}
+  .aula-h{display:flex;justify-content:space-between;align-items:center;padding:7px 10px;background:#f3efe4;font-weight:700;font-size:13px}
+  .aula-h span{font-weight:600;color:var(--muted);font-size:12px}
+  .mlist{display:flex;flex-wrap:wrap;gap:6px;padding:7px 10px 9px;background:#f9f6ee}
+  .mbtn{border:2px solid var(--ink);background:#fff;border-radius:8px;min-width:34px;height:30px;font-weight:800;font-size:13px;color:var(--ink)}
+  .mbtn.done{background:var(--mint);border-color:var(--mint);color:#fff}
+  .mbtn.cur{outline:3px solid var(--sun);outline-offset:1px}
+  .mcard{padding:18px 18px 24px}
+  .mtag{display:inline-block;font-size:12px;font-weight:800;color:#fff;background:var(--coral);padding:3px 10px;border-radius:99px;margin-bottom:10px}
+  .mcard h2{font-size:21px;line-height:1.25;margin-bottom:10px}
+  .mcard p{font-size:14.5px;line-height:1.55;margin-bottom:10px}
+  .mcard ul{font-size:14px;line-height:1.55;padding-left:20px;margin-bottom:10px}
+  .mcard code{background:#fff3d6;padding:1px 5px;border-radius:5px;font-size:13px}
+  .example{background:var(--ink2);color:#e6edf7;border-radius:10px;padding:12px 14px;font-size:13px;line-height:1.6;white-space:pre-wrap;margin:8px 0 12px;font-family:"Cascadia Code",Consolas,"DejaVu Sans Mono",monospace}
+  .status{display:flex;align-items:center;gap:10px;border-radius:12px;padding:12px 14px;font-weight:700;font-size:14px;margin:6px 0 12px}
+  .status.todo{background:#f3efe4;color:var(--muted)}
+  .status.ok{background:#d3f6ec;color:#047857}
+  .actions{display:flex;gap:8px;flex-wrap:wrap}
+  .btn{border:0;border-radius:99px;padding:10px 18px;font-weight:800;font-size:14px}
+  .btn.main{background:var(--coral);color:#fff}
+  .btn.alt{background:#fff;border:2px solid var(--ink);color:var(--ink)}
+  .hint{display:none;margin-top:12px;background:#fff8e1;border-left:4px solid var(--sun);padding:10px 12px;border-radius:6px;font-size:14px;line-height:1.5}
+  .hint.show{display:block}
+
+  /* editor */
+  .editor{background:var(--ink2);color:#e6edf7}
+  .etabs{display:flex;align-items:center;gap:4px;padding:8px 10px 0;background:var(--ink)}
+  .etab{background:none;border:0;color:#aab3c5;padding:9px 16px;border-radius:10px 10px 0 0;font-weight:800;font-size:13px;font-family:"Cascadia Code",Consolas,monospace}
+  .etab.on{background:var(--ink2);color:#fff}
+  .etab.html.on{box-shadow:inset 0 3px 0 var(--coral)}
+  .etab.css.on{box-shadow:inset 0 3px 0 var(--sky)}
+  .etabs .sp{flex:1}
+  .etabs .tool{background:none;border:1px solid rgba(255,255,255,.25);color:#cfd6e4;border-radius:8px;padding:5px 10px;font-size:12px;margin-bottom:6px}
+  .code-wrap{flex:1;position:relative;min-height:0}
+  textarea{position:absolute;inset:0;width:100%;height:100%;resize:none;border:0;outline:0;background:var(--ink2);color:#e6edf7;padding:16px 18px;font-size:15px;line-height:1.65;tab-size:2;white-space:pre;overflow:auto}
+  textarea::selection{background:#2f4a7a}
+  textarea.hide{display:none}
+  .errline{background:#2a1520;color:#ffb3c4;font-size:12.5px;padding:7px 14px;display:none}
+  .errline.show{display:block}
+
+  /* resultado */
+  .result{background:#e9e4d6}
+  .rhead{display:flex;align-items:center;gap:8px;padding:10px 14px;background:#ddd6c4;font-size:13px;font-weight:700}
+  .dots{display:flex;gap:5px}.dots i{width:10px;height:10px;border-radius:50%;background:#bfb6a0}
+  .rhead .url{flex:1;background:#fff;border-radius:99px;padding:4px 12px;color:var(--muted);font-weight:500;font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .frame-wrap{flex:1;padding:12px;min-height:0}
+  iframe{width:100%;height:100%;border:0;background:#fff;border-radius:10px;box-shadow:0 2px 0 rgba(0,0,0,.06)}
+
+  /* referência */
+  .modal{position:fixed;inset:0;background:rgba(15,26,48,.6);display:none;align-items:center;justify-content:center;padding:20px;z-index:20}
+  .modal.show{display:flex}
+  .sheet{background:#fff;border-radius:18px;max-width:760px;width:100%;max-height:88vh;overflow:auto;padding:24px 26px}
+  .sheet h2{font-size:22px;margin-bottom:4px}
+  .sheet .sub{color:var(--muted);font-size:14px;margin-bottom:16px}
+  .sheet h3{font-size:15px;margin:16px 0 8px}
+  .ref{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+  .ref div{background:#f9f6ee;border-radius:10px;padding:8px 11px;font-size:13.5px;line-height:1.45}
+  .ref code{font-weight:700;color:var(--coral)}
+  .ref.css code{color:var(--sky)}
+  .close{float:right;background:var(--ink);color:#fff;border:0;border-radius:99px;padding:6px 14px;font-weight:700}
+
+  /* comemoração */
+  .toast{position:fixed;left:50%;bottom:28px;transform:translateX(-50%) translateY(140px);background:var(--ink);color:#fff;padding:14px 22px;border-radius:16px;font-weight:800;font-size:16px;box-shadow:6px 6px 0 var(--sun);transition:transform .35s cubic-bezier(.2,1.4,.4,1);z-index:30;text-align:center}
+  .toast.show{transform:translateX(-50%) translateY(0)}
+  .burst{position:fixed;pointer-events:none;font-size:26px;z-index:29;animation:fly 1.2s ease-out forwards}
+  @keyframes fly{to{transform:translate(var(--dx),var(--dy)) rotate(var(--r));opacity:0}}
+
+  @media (max-width:980px){
+    main{grid-template-columns:1fr}
+    .tabs{display:flex}
+    .pane{display:none}
+    .pane.on{display:flex}
+    .mission{border-right:0}
+    .progress{order:3;flex-basis:100%}
+    textarea{font-size:14px}
+  }
+</style>
+</head>
+<body>
+
+<div class="top">
+  <div class="logo">&lt;conectados<span>/</span>&gt;<small>Laboratório de HTML e CSS</small></div>
+  <div class="progress"><div class="bar"><i id="bar"></i></div><span id="ptext">0 de 0</span></div>
+  <div class="medals">🏅 <b id="mcount">0</b> medalhas</div>
+  <button class="ghost" id="openRef">📘 Cola rápida</button>
+</div>
+
+<nav class="tabs" id="tabs">
+  <button data-p="mission" class="on">🎯 Missão</button>
+  <button data-p="editor">⌨️ Código</button>
+  <button data-p="result">👀 Resultado</button>
+</nav>
+
+<main>
+  <!-- MISSÃO -->
+  <section class="pane mission on" id="p-mission">
+    <div class="aulas" id="aulas"><h3>Aulas e missões</h3></div>
+    <div class="mcard" id="mcard"></div>
+  </section>
+
+  <!-- EDITOR -->
+  <section class="pane editor" id="p-editor">
+    <div class="etabs">
+      <button class="etab html on" data-e="html">index.html</button>
+      <button class="etab css" data-e="css">estilo.css</button>
+      <span class="sp"></span>
+      <button class="tool" id="copy" title="Copiar a página completa">⧉ Copiar</button>
+      <button class="tool" id="download" title="Baixar a página como arquivo .html">⬇ Baixar</button>
+      <button class="tool" id="reset" title="Apagar tudo e começar de novo">↺ Recomeçar</button>
+    </div>
+    <div class="code-wrap">
+      <textarea id="html" spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Código HTML"></textarea>
+      <textarea id="css" class="hide" spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Código CSS"></textarea>
+    </div>
+    <div class="errline" id="err"></div>
+  </section>
+
+  <!-- RESULTADO -->
+  <section class="pane result" id="p-result">
+    <div class="rhead"><div class="dots"><i></i><i></i><i></i></div><div class="url">minha-pagina.html — atualiza enquanto você digita</div></div>
+    <div class="frame-wrap"><iframe id="view" sandbox="allow-same-origin" title="Resultado da sua página"></iframe></div>
+  </section>
+</main>
+
+<div class="modal" id="ref">
+  <div class="sheet">
+    <button class="close" id="closeRef">Fechar</button>
+    <h2>📘 Cola rápida</h2>
+    <p class="sub">As tags e propriedades mais usadas na oficina.</p>
+    <h3>HTML: a estrutura (o esqueleto da página)</h3>
+    <div class="ref">
+      <div><code>&lt;h1&gt; … &lt;h6&gt;</code><br>Títulos, do maior ao menor</div>
+      <div><code>&lt;p&gt;</code><br>Parágrafo de texto</div>
+      <div><code>&lt;strong&gt; &lt;em&gt;</code><br>Negrito e itálico</div>
+      <div><code>&lt;ul&gt; &lt;ol&gt; &lt;li&gt;</code><br>Listas e seus itens</div>
+      <div><code>&lt;a href="…"&gt;</code><br>Link para outra página</div>
+      <div><code>&lt;img src="…" alt="…"&gt;</code><br>Imagem (alt descreve a imagem)</div>
+      <div><code>&lt;div&gt; &lt;section&gt;</code><br>Caixas para agrupar conteúdo</div>
+      <div><code>&lt;header&gt; &lt;footer&gt;</code><br>Topo e rodapé da página</div>
+      <div><code>class="nome"</code><br>Dá um nome para estilizar no CSS</div>
+      <div><code>&lt;!-- … --&gt;</code><br>Comentário (não aparece na tela)</div>
+    </div>
+    <h3>CSS: o visual (a roupa da página)</h3>
+    <div class="ref css">
+      <div><code>color</code><br>Cor do texto: <code>color: tomato;</code></div>
+      <div><code>background-color</code><br>Cor de fundo</div>
+      <div><code>font-size</code><br>Tamanho da letra: <code>20px</code></div>
+      <div><code>font-family</code><br>Tipo de letra: <code>Arial, sans-serif</code></div>
+      <div><code>text-align</code><br><code>left</code>, <code>center</code>, <code>right</code></div>
+      <div><code>padding</code><br>Espaço por dentro da caixa</div>
+      <div><code>margin</code><br>Espaço por fora da caixa</div>
+      <div><code>border</code><br>Borda: <code>3px solid black</code></div>
+      <div><code>border-radius</code><br>Cantos arredondados</div>
+      <div><code>display: flex</code><br>Coloca os itens lado a lado</div>
+      <div><code>gap</code><br>Espaço entre os itens do flex</div>
+      <div><code>.nome { }</code><br>Estiliza quem tem <code>class="nome"</code></div>
+    </div>
+    <h3>Cores que o navegador já conhece</h3>
+    <p class="sub">tomato · gold · orange · crimson · hotpink · purple · navy · royalblue · teal · seagreen · black · white · #ef476f · #ffc43d</p>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ============================================================
+   Missões: cada uma tem um teste que olha a página do aluno.
+   d = documento da página, w = janela, css = texto do CSS
+   ============================================================ */
+const START_HTML = `<!-- Escreva o conteúdo da sua página aqui -->
+<h1>Título da página</h1>
+`;
+const START_CSS = `/* Aqui você deixa a página com a sua cara */
+`;
+
+const has = (d, sel) => d.querySelector(sel);
+const all = (d, sel) => [...d.querySelectorAll(sel)];
+const txt = el => (el && el.textContent || '').trim();
+const cs  = (w, el, p) => el ? w.getComputedStyle(el).getPropertyValue(p) : '';
+const px  = v => parseFloat(v) || 0;
+const isTransparent = c => !c || c === 'transparent' || /rgba\(\s*0,\s*0,\s*0,\s*0\s*\)/.test(c);
+
+const AULAS = [
+ { n:1, t:"Olá, HTML!", missions:[
+  { id:"m1", title:"Seu primeiro título",
+    body:`<p>Toda página começa com um título. No HTML, ele fica dentro da tag <code>&lt;h1&gt;</code>.</p>
+          <p>Troque o texto do título por um <b>apelido</b> ou pelo <b>nome do seu projeto</b>. Não use seu nome completo: na internet, cuidamos dos nossos dados!</p>`,
+    ex:`<h1>Página da Gabi Gamer</h1>`,
+    hint:"Apague só as palavras “Título da página” e escreva outra coisa. Mantenha o <code>&lt;h1&gt;</code> no começo e o <code>&lt;/h1&gt;</code> no fim.",
+    test:(d)=>{ const h=has(d,'h1'); return !!h && txt(h).length>2 && txt(h)!=='Título da página'; } },
+  { id:"m2", title:"Conte sobre você",
+    body:`<p>Parágrafos usam a tag <code>&lt;p&gt;</code>. Escreva <b>dois parágrafos</b> embaixo do título: um falando do que você gosta e outro sobre o que quer aprender.</p>`,
+    ex:`<p>Eu curto música e futebol.</p>\n<p>Quero aprender a criar sites.</p>`,
+    hint:"Cada parágrafo abre com <code>&lt;p&gt;</code> e fecha com <code>&lt;/p&gt;</code>. Você precisa de pelo menos dois.",
+    test:(d)=> all(d,'p').filter(p=>txt(p).length>3).length>=2 },
+  { id:"m3", title:"Destaque palavras",
+    body:`<p>Deixe palavras importantes em <b>negrito</b> com <code>&lt;strong&gt;</code> e em <i>itálico</i> com <code>&lt;em&gt;</code>. Use as duas tags em algum lugar dos seus parágrafos.</p>`,
+    ex:`<p>Eu <strong>amo</strong> jogar <em>Minecraft</em>.</p>`,
+    hint:"As tags ficam <b>dentro</b> do parágrafo, em volta da palavra que você quer destacar.",
+    test:(d)=> !!has(d,'strong, b') && !!has(d,'em, i') },
+ ]},
+ { n:2, t:"Listas, links e imagens", missions:[
+  { id:"m4", title:"Minha lista de favoritos",
+    body:`<p>Crie uma lista com <b>pelo menos 3 coisas</b> que você curte (jogos, músicas, comidas…). A lista começa com <code>&lt;ul&gt;</code> e cada item é um <code>&lt;li&gt;</code>.</p>`,
+    ex:`<h2>Meus jogos favoritos</h2>\n<ul>\n  <li>Minecraft</li>\n  <li>Free Fire</li>\n  <li>FIFA</li>\n</ul>`,
+    hint:"Os <code>&lt;li&gt;</code> precisam ficar <b>dentro</b> do <code>&lt;ul&gt;</code>…<code>&lt;/ul&gt;</code>.",
+    test:(d)=> all(d,'ul, ol').some(l=>l.querySelectorAll('li').length>=3) },
+  { id:"m5", title:"Um link para o mundo",
+    body:`<p>Links usam a tag <code>&lt;a&gt;</code> e o atributo <code>href</code> com o endereço do site. Crie um link para um site que você recomenda.</p>`,
+    ex:`<p>Aprenda mais no <a href="https://developer.mozilla.org/pt-BR/">MDN</a>.</p>`,
+    hint:"O endereço vai entre aspas depois de <code>href=</code>. Ele precisa começar com <code>http</code>.",
+    test:(d)=> all(d,'a[href]').some(a=>/^https?:\/\//i.test(a.getAttribute('href').trim()) && txt(a).length>0) },
+  { id:"m6", title:"Coloque uma imagem",
+    body:`<p>Imagens usam <code>&lt;img&gt;</code>, que não tem tag de fechamento. O <code>src</code> é o endereço da imagem e o <code>alt</code> é uma descrição para quem não enxerga.</p>
+          <p>Use imagens de bancos gratuitos e <b>nunca fotos de colegas sem autorização</b>.</p>
+          <p style="font-size:13px;color:#5b6475">Obs.: se a imagem não aparecer aqui no laboratório, tudo bem. A missão confere o código, e a imagem aparece quando você abrir a página salva.</p>`,
+    ex:`<img src="https://picsum.photos/400/200" alt="Paisagem aleatória">`,
+    hint:"Confira se escreveu <code>src=\"…\"</code> <b>e</b> <code>alt=\"…\"</code>. O alt não pode ficar vazio.",
+    test:(d)=> all(d,'img').some(i=>(i.getAttribute('src')||'').trim() && (i.getAttribute('alt')||'').trim().length>2) },
+ ]},
+ { n:3, t:"CSS: cores e letras", missions:[
+  { id:"m7", title:"Pinte o fundo",
+    body:`<p>Agora é com o <b>CSS</b>! Clique na aba <code>estilo.css</code> e mude a cor de fundo da página usando o seletor <code>body</code>.</p>`,
+    ex:`body {\n  background-color: lightyellow;\n}`,
+    hint:"Não esqueça as chaves <code>{ }</code>, os dois-pontos e o ponto e vírgula no fim da linha.",
+    test:(d,w)=>{ const c=cs(w,d.body,'background-color'); return !isTransparent(c) && c!=='rgb(255, 255, 255)'; } },
+  { id:"m8", title:"Título com estilo",
+    body:`<p>Mude a <b>cor</b> do seu título <code>h1</code> e deixe-o <b>centralizado</b>.</p>`,
+    ex:`h1 {\n  color: crimson;\n  text-align: center;\n}`,
+    hint:"Use as propriedades <code>color</code> e <code>text-align: center;</code> dentro de <code>h1 { }</code>.",
+    test:(d,w)=>{ const h=has(d,'h1'); return !!h && cs(w,h,'color')!=='rgb(0, 0, 0)' && cs(w,h,'text-align')==='center'; } },
+  { id:"m9", title:"Troque a letra",
+    body:`<p>Escolha outro tipo de letra com <code>font-family</code> e deixe os parágrafos maiores, com <code>font-size</code> de <b>18px ou mais</b>.</p>`,
+    ex:`p {\n  font-family: Arial, sans-serif;\n  font-size: 20px;\n}`,
+    hint:"As duas propriedades podem ficar juntas no seletor <code>p { }</code> ou no <code>body { }</code>.",
+    test:(d,w,css)=>{ const p=has(d,'p'); return !!p && px(cs(w,p,'font-size'))>=18 && /font-family\s*:/i.test(css); } },
+ ]},
+ { n:4, t:"Caixas: o box model", missions:[
+  { id:"m10", title:"Crie um cartão",
+    body:`<p>Toda tag é uma <b>caixa</b>. Coloque uma parte da sua página dentro de <code>&lt;div class="cartao"&gt;</code> e, no CSS, dê ao <code>.cartao</code> um <b>espaço interno</b> (<code>padding</code>) e uma <b>borda</b> (<code>border</code>).</p>`,
+    ex:`<div class="cartao">\n  <h2>Sobre mim</h2>\n  <p>Eu curto música.</p>\n</div>\n\n/* no estilo.css */\n.cartao {\n  padding: 20px;\n  border: 3px solid navy;\n}`,
+    hint:"No CSS, o nome da classe começa com ponto: <code>.cartao</code>. Na tag HTML, escreva sem ponto: <code>class=\"cartao\"</code>.",
+    test:(d,w)=> all(d,'body *').some(e=>e.classList.length && px(cs(w,e,'padding-top'))>0 && px(cs(w,e,'border-top-width'))>0 && cs(w,e,'border-top-style')!=='none') },
+  { id:"m11", title:"Cantos redondos e espaço",
+    body:`<p>Deixe o cartão mais bonito: arredonde os cantos com <code>border-radius</code>, dê uma cor de fundo e afaste ele das outras coisas com <code>margin</code>.</p>`,
+    ex:`.cartao {\n  border-radius: 16px;\n  background-color: white;\n  margin: 20px;\n}`,
+    hint:"As três propriedades precisam estar no mesmo elemento: <code>border-radius</code>, <code>background-color</code> e <code>margin</code>.",
+    test:(d,w)=> all(d,'body *').some(e=>px(cs(w,e,'border-top-left-radius'))>0 && !isTransparent(cs(w,e,'background-color')) && px(cs(w,e,'margin-top'))>0) },
+ ]},
+ { n:5, t:"Layout com flexbox", missions:[
+  { id:"m12", title:"Lado a lado",
+    body:`<p>Coloque <b>três cartões</b> dentro de uma caixa com <code>class="galeria"</code>. No CSS, use <code>display: flex;</code> na galeria para que eles fiquem um do lado do outro.</p>`,
+    ex:`<div class="galeria">\n  <div class="cartao">Música</div>\n  <div class="cartao">Jogos</div>\n  <div class="cartao">Esportes</div>\n</div>\n\n.galeria {\n  display: flex;\n  gap: 16px;\n}`,
+    hint:"O <code>display: flex;</code> vai na caixa de <b>fora</b> (a galeria), não nos cartões.",
+    test:(d,w)=> all(d,'body *').some(e=>/flex/.test(cs(w,e,'display')) && e.children.length>=3) },
+  { id:"m13", title:"Topo e rodapé",
+    body:`<p>Sites de verdade têm um topo e um rodapé. Coloque o título dentro de <code>&lt;header&gt;</code>, crie um <code>&lt;footer&gt;</code> no final e dê uma cor de fundo aos dois.</p>`,
+    ex:`<header>\n  <h1>Página da Gabi Gamer</h1>\n</header>\n…\n<footer>Feito na oficina &lt;conectados/&gt;</footer>`,
+    hint:"Lembre de estilizar <code>header</code> e <code>footer</code> no CSS com <code>background-color</code>.",
+    test:(d,w)=>{ const h=has(d,'header'), f=has(d,'footer'); return !!h && !!f && !isTransparent(cs(w,h,'background-color')) && !isTransparent(cs(w,f,'background-color')); } },
+ ]},
+ { n:6, t:"Projeto final", missions:[
+  { id:"m14", title:"Minha página completa",
+    body:`<p>Hora de juntar tudo! Sua página final precisa ter:</p>
+          <ul><li>topo (<code>header</code>) com título</li><li>pelo menos 3 parágrafos</li><li>uma lista e um link</li><li>uma galeria com <code>display: flex</code></li><li>um rodapé (<code>footer</code>)</li><li>pelo menos 6 regras no CSS</li></ul>`,
+    ex:`Dica: use o botão ⬇ Baixar para salvar sua página\ne mostrar para a turma na mostra final!`,
+    hint:"Volte nas missões anteriores: tudo o que precisa já foi feito por você. A lista de itens acima diz o que ainda falta.",
+    test:(d,w,css)=>{
+      const rules=(css.match(/\{[^}]*\}/g)||[]).length;
+      return !!has(d,'header h1, header h2') && all(d,'p').length>=3 && !!has(d,'ul li, ol li') && !!has(d,'a[href]')
+        && all(d,'body *').some(e=>/flex/.test(cs(w,e,'display'))) && !!has(d,'footer') && rules>=6; } },
+  { id:"m15", title:"Checagem de privacidade",
+    body:`<p>Antes de publicar, revise sua página com atenção. Marque cada item quando tiver certeza:</p>
+          <div id="privacy"></div>`,
+    ex:`Na internet, o que é publicado pode ficar lá para sempre.\nProteger seus dados é parte de ser um bom programador.`,
+    hint:"Releia sua página do começo ao fim. Se encontrar algum dado pessoal, troque por algo genérico.",
+    privacy:["Não coloquei meu nome completo, só um apelido","Não coloquei endereço, telefone nem nome da escola","Não usei fotos minhas ou de colegas","Os links levam para sites seguros"],
+    test:()=> PRIV.every(Boolean) },
+ ]},
+];
+
+/* ------------------------ estado ------------------------ */
+const KEY='conectados-lab-v1';
+let S={html:START_HTML, css:START_CSS, done:{}, cur:'m1', priv:[]};
+try{ const raw=localStorage.getItem(KEY); if(raw) S=Object.assign(S, JSON.parse(raw)); }catch(e){}
+let PRIV = S.priv && S.priv.length ? S.priv : [false,false,false,false];
+const save=()=>{ try{ S.priv=PRIV; localStorage.setItem(KEY, JSON.stringify(S)); }catch(e){} };
+
+const ALL = AULAS.flatMap(a=>a.missions.map(m=>Object.assign(m,{aula:a.n,aulaT:a.t})));
+const byId = id => ALL.find(m=>m.id===id) || ALL[0];
+
+/* ------------------------ elementos ------------------------ */
+const $=id=>document.getElementById(id);
+const H=$('html'), C=$('css'), V=$('view');
+H.value=S.html; C.value=S.css;
+
+/* ------------------------ lista de aulas ------------------------ */
+function renderAulas(){
+  const box=$('aulas'); box.innerHTML='<h3>Aulas e missões</h3>';
+  AULAS.forEach(a=>{
+    const done=a.missions.filter(m=>S.done[m.id]).length;
+    const el=document.createElement('div'); el.className='aula';
+    el.innerHTML=`<div class="aula-h">Aula ${a.n} · ${a.t}<span>${done}/${a.missions.length}</span></div><div class="mlist"></div>`;
+    a.missions.forEach(m=>{
+      const b=document.createElement('button');
+      b.className='mbtn'+(S.done[m.id]?' done':'')+(S.cur===m.id?' cur':'');
+      b.textContent=S.done[m.id]?'✓':m.id.slice(1);
+      b.title=m.title;
+      b.onclick=()=>{ S.cur=m.id; save(); renderAulas(); renderMission(); check(); };
+      el.querySelector('.mlist').appendChild(b);
+    });
+    box.appendChild(el);
+  });
+  const n=Object.keys(S.done).filter(k=>S.done[k]).length;
+  $('bar').style.width=(n/ALL.length*100)+'%';
+  $('ptext').textContent=`${n} de ${ALL.length} missões`;
+  $('mcount').textContent=n;
+}
+
+function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+
+function renderMission(){
+  const m=byId(S.cur);
+  $('mcard').innerHTML=`
+    <span class="mtag">Aula ${m.aula} · Missão ${m.id.slice(1)}</span>
+    <h2>${m.title}</h2>
+    ${m.body}
+    <div class="example">${esc(m.ex)}</div>
+    <div class="status ${S.done[m.id]?'ok':'todo'}" id="st">${S.done[m.id]?'✅ Missão cumprida!':'⏳ Ainda não… continue tentando!'}</div>
+    <div class="actions">
+      <button class="btn alt" id="hintBtn">💡 Dica</button>
+      <button class="btn main" id="nextBtn">Próxima missão →</button>
+    </div>
+    <div class="hint" id="hint">${m.hint}</div>`;
+  $('hintBtn').onclick=()=>$('hint').classList.toggle('show');
+  $('nextBtn').onclick=()=>{ const i=ALL.indexOf(m); if(i<ALL.length-1){ S.cur=ALL[i+1].id; save(); renderAulas(); renderMission(); check(); } else toast('Você chegou ao fim! 🎉 Baixe sua página e mostre para a turma.'); };
+  if(m.privacy){
+    const p=$('privacy'); p.style.margin='4px 0 10px';
+    m.privacy.forEach((t,i)=>{
+      const l=document.createElement('label');
+      l.style.cssText='display:flex;gap:10px;align-items:flex-start;font-size:14px;margin:8px 0;cursor:pointer';
+      l.innerHTML=`<input type="checkbox" ${PRIV[i]?'checked':''} style="width:18px;height:18px;margin-top:2px"> <span>${t}</span>`;
+      l.querySelector('input').onchange=e=>{ PRIV[i]=e.target.checked; save(); check(); };
+      p.appendChild(l);
+    });
+  }
+}
+
+/* ------------------------ renderizar a página do aluno ------------------------ */
+function build(){
+  return `<!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8"><title>Minha página</title><style>${C.value}</style></head><body>${H.value}</body></html>`;
+}
+let t=null;
+function update(){
+  S.html=H.value; S.css=C.value; save();
+  V.srcdoc=build();
+  warn();
+}
+function schedule(){ clearTimeout(t); t=setTimeout(update,250); }
+V.addEventListener('load', check);
+
+/* aviso simples de tags que não foram fechadas */
+function warn(){
+  const e=$('err'); const msgs=[];
+  const opens=(H.value.match(/<(h[1-6]|p|ul|ol|li|a|div|section|header|footer|strong|em)\b[^>]*>/gi)||[]).map(x=>x.match(/<(\w+)/)[1].toLowerCase());
+  const closes=(H.value.match(/<\/(h[1-6]|p|ul|ol|li|a|div|section|header|footer|strong|em)>/gi)||[]).map(x=>x.match(/<\/(\w+)/)[1].toLowerCase());
+  const count=a=>a.reduce((o,k)=>(o[k]=(o[k]||0)+1,o),{});
+  const o=count(opens), c=count(closes);
+  Object.keys(o).forEach(k=>{ if((c[k]||0)<o[k]) msgs.push(`&lt;${k}&gt;`); });
+  const ob=(C.value.match(/\{/g)||[]).length, cb=(C.value.match(/\}/g)||[]).length;
+  let txt='';
+  if(msgs.length) txt+=`⚠️ Parece que faltou fechar: ${msgs.join(', ')}. `;
+  if(ob!==cb) txt+=`⚠️ No CSS, confira as chaves { }: abriu ${ob} e fechou ${cb}.`;
+  e.innerHTML=txt; e.classList.toggle('show',!!txt);
+}
+
+/* ------------------------ verificar missão ------------------------ */
+function check(){
+  const m=byId(S.cur); let ok=false;
+  try{ const d=V.contentDocument, w=V.contentWindow; if(d && d.body) ok=!!m.test(d,w,C.value); }catch(e){ ok=false; }
+  const st=$('st');
+  if(ok && !S.done[m.id]){
+    S.done[m.id]=true; save(); renderAulas();
+    celebrate(`🏅 Medalha conquistada: ${m.title}!`);
+  }
+  if(st){ const d=!!S.done[m.id]; st.className='status '+(d?'ok':'todo'); st.textContent=d?'✅ Missão cumprida!':'⏳ Ainda não… continue tentando!'; }
+}
+
+/* ------------------------ comemoração ------------------------ */
+function toast(msg){ const t=$('toast'); t.textContent=msg; t.classList.add('show'); clearTimeout(t._h); t._h=setTimeout(()=>t.classList.remove('show'),2800); }
+function celebrate(msg){
+  toast(msg);
+  const em=['🎉','⭐','🏅','✨','💛','🚀'];
+  for(let i=0;i<18;i++){
+    const s=document.createElement('span'); s.className='burst';
+    s.textContent=em[i%em.length];
+    s.style.left=(window.innerWidth/2)+'px'; s.style.top=(window.innerHeight-90)+'px';
+    s.style.setProperty('--dx',(Math.random()*600-300)+'px');
+    s.style.setProperty('--dy',(-150-Math.random()*350)+'px');
+    s.style.setProperty('--r',(Math.random()*360)+'deg');
+    document.body.appendChild(s); setTimeout(()=>s.remove(),1300);
+  }
+}
+
+/* ------------------------ editor: abas, tab, atalhos ------------------------ */
+document.querySelectorAll('.etab').forEach(b=>b.onclick=()=>{
+  document.querySelectorAll('.etab').forEach(x=>x.classList.remove('on')); b.classList.add('on');
+  H.classList.toggle('hide', b.dataset.e!=='html'); C.classList.toggle('hide', b.dataset.e!=='css');
+  (b.dataset.e==='html'?H:C).focus();
+});
+[H,C].forEach(ta=>{
+  ta.addEventListener('input', schedule);
+  ta.addEventListener('keydown', e=>{
+    if(e.key==='Tab'){ e.preventDefault(); const s=ta.selectionStart, en=ta.selectionEnd;
+      ta.value=ta.value.slice(0,s)+'  '+ta.value.slice(en); ta.selectionStart=ta.selectionEnd=s+2; schedule(); }
+  });
+});
+
+/* abas no celular */
+document.querySelectorAll('#tabs button').forEach(b=>b.onclick=()=>{
+  document.querySelectorAll('#tabs button').forEach(x=>x.classList.remove('on')); b.classList.add('on');
+  document.querySelectorAll('.pane').forEach(p=>p.classList.remove('on'));
+  $('p-'+b.dataset.p).classList.add('on');
+  if(b.dataset.p==='result') update();
+});
+
+/* baixar e recomeçar */
+let DL=null;
+try{ if(window.claude && window.claude.use) window.claude.use('downloads').then(n=>{DL=n;}).catch(()=>{}); }catch(e){}
+$('download').onclick=async()=>{
+  const data=build();
+  if(DL){
+    try{ await DL.save({filename:'minha-pagina.html', data}); toast('⬇ Página salva: minha-pagina.html'); }
+    catch(e){ toast('Download cancelado. Você também pode usar ⧉ Copiar.'); }
+    return;
+  }
+  try{
+    const blob=new Blob([data],{type:'text/html'}); const a=document.createElement('a');
+    a.href=URL.createObjectURL(blob); a.download='minha-pagina.html'; document.body.appendChild(a); a.click(); a.remove();
+    toast('Se o download não começar, use ⧉ Copiar e cole num arquivo .html');
+  }catch(e){ toast('Use ⧉ Copiar e cole o código num arquivo .html'); }
+};
+$('copy').onclick=async()=>{
+  try{ await navigator.clipboard.writeText(build()); toast('⧉ Código copiado! Cole num arquivo minha-pagina.html'); }
+  catch(e){ toast('Não deu para copiar. Selecione o código e use Ctrl+C.'); }
+};
+let resetArm=null;
+$('reset').onclick=()=>{
+  const b=$('reset');
+  if(!resetArm){ b.textContent='Tem certeza? Clique de novo'; resetArm=setTimeout(()=>{resetArm=null;b.textContent='↺ Recomeçar';},3000); return; }
+  clearTimeout(resetArm); resetArm=null; b.textContent='↺ Recomeçar';
+  H.value=START_HTML; C.value=START_CSS; update(); toast('Código apagado. As medalhas continuam!');
+};
+$('openRef').onclick=()=>$('ref').classList.add('show');
+$('closeRef').onclick=()=>$('ref').classList.remove('show');
+$('ref').onclick=e=>{ if(e.target.id==='ref') $('ref').classList.remove('show'); };
+
+/* início */
+renderAulas(); renderMission(); update();
+</script>
+</body>
+</html>
